@@ -10,7 +10,6 @@ extern "C" {
 }
 /*************************** cpp start ********************************/
 #include "BlockDevice.h"
-#include "mbed.h"
 #include "FlashIAP.h"
 #include "gsl"
 class Internal_flash_block_device : public BlockDevice
@@ -44,16 +43,14 @@ class Internal_flash_block_device : public BlockDevice
         return BD_ERROR_OK;
     }
     virtual int read(void *buffer, bd_addr_t addr, bd_size_t size)
-    {
-        //printf("read addr %llu, size %llu\r\n", addr, size);        
+    {  
         Expects(addr + size <= m_size);
         const auto flash_ret = m_internal_flash.read(buffer, m_start + addr, size);
         Ensures(flash_ret == 0);
         return BD_ERROR_OK;
     }
     virtual int program(const void *buffer, bd_addr_t addr, bd_size_t size)
-    {
-        printf("program addr %llu, size %llu\r\n", addr, size);        
+    {       
         Expects(addr + size <= m_size);
         const auto flash_ret = m_internal_flash.program(buffer, m_start +addr, size);
         Ensures(flash_ret == 0);
@@ -61,8 +58,7 @@ class Internal_flash_block_device : public BlockDevice
     }
 
     virtual int erase(bd_addr_t addr, bd_size_t size)
-    {
-        printf("erase addr %llu, size %llu\r\n", addr, size);        
+    {    
         Expects(addr + size <= m_size);
         const auto flash_ret = m_internal_flash.erase(m_start + addr, size);
         Ensures(flash_ret == 0);
@@ -83,7 +79,7 @@ class Internal_flash_block_device : public BlockDevice
     }
 
   private:
-    FlashIAP m_internal_flash;
+    mbed::FlashIAP m_internal_flash;
     uint32_t m_start;
     uint32_t m_size;
 };
